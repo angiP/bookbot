@@ -1,21 +1,20 @@
-from stats import get_num_chars
 from stats import get_num_words
 from stats import get_sorted_dict
 import sys
 
-def wrapper(path_name, func):
-    with open(path_name) as f:
-        return func(f.read())
-
-def print_report(path_name):
+def print_report(book_text, path_name):
+    """Print analysis report for the book."""
     print("============ BOOKBOT ============")
-    print("Analyzing book found at " + path_name + "...")
+    print(f"Analyzing book found at {path_name} ...")
+
     print("----------- Word Count ----------")
-    print(wrapper(path_name, get_num_words))
+    print(f"Found {get_num_words(book_text)} total words")
+
     print("--------- Character Count -------")
-    list_dicts = wrapper(path_name, get_num_chars)
+    list_dicts = get_sorted_dict(book_text)
     for list_elem in list_dicts:
         print(list_elem["char"] +  ":", list_elem["numb"])
+    
     print("============= END ===============")
 
 def check_user_input():
@@ -25,6 +24,12 @@ def check_user_input():
 
 def main():
     check_user_input()
-    char_dict = print_report(sys.argv[1])
+    try:
+        with open(sys.argv[1]) as f:
+            book_text = f.read()
+    except FileNotFoundError:
+        print(f"Error: File '{sys.argv[1]}' not found")
+        sys.exit(1)
+    print_report(book_text, sys.argv[1])
 
 main()
